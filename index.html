@@ -58,12 +58,25 @@
     <audio data-key="74" src="sounds/snare.wav"></audio>
     <audio data-key="75" src="sounds/tom.wav"></audio>
     <audio data-key="76" src="sounds/tink.wav"></audio>
-  
-<script>
-    window.addEventListener('keydown', function (e) {//event for when keydown is pressed, trigger the function
-        //console.log(e.keyCode);
-        const audio = document.querySelector(`audio[data-key=${e.keyCode}]`);//select one audio element with querySelector, then use ES6 template string to select the pressed data-key
-    });
+
+<script>    
+    function playSound(e) { 
+        const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);//select one audio element with Selector, then use ES6 template string to select the pressed data-key
+        const key = document.querySelector(`.key[data-key="${e.keyCode}"]`); //select the key to add the animation when pressed
+        if(!audio) return; //if there is no audio / other key pressed, stop the function all together
+        audio.currentTime = 0;//start the audio over when pressed every time, without this line the audio will play till the end before restarting!!
+        audio.play(); //if there is audio / asssigned key presses, play the audio
+        key.classList.add('playing'); //get the class from CSS and add to the function
+    };
+
+    function removeTransition(e) {
+        if(e.propertyName !== 'transform') return; //skip it if it's not a transform
+        this.classList.remove('playing');//'this' is the key we use on the addeventlistner, and we remove the CSS class here
+    }
+
+    const keys = document.querySelectorAll('.key');//select all keys with SelectorAll
+    keys.forEach (key => key.addEventListener('transitionend', removeTransition));//for each key add this when pressed
+    window.addEventListener('keydown', playSound);//event for when keydown is pressed, trigger the function playSound
 </script>
    
 </body>
